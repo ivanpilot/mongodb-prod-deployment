@@ -12,19 +12,23 @@
 
 
 
-if [ "${1:0:1}" = "-" ]; then
+if [ "${1:0:2}" = "--" ]; then
     shift
-    statefulService=$3
-    statefulSetObject=$2
     replicas=$1
+    statefulService=$2
+    statefulSetObject=$3
     containerName=$4
     replSetName=$5
-    port=$6
+
+    if [ -n $5 ]; then
+        port=27017
+    else
+        port=$5
+    fi
 
     initializeContent="{_id: ${replSetName}, version: 1, members: "
 
     if [ -n $1 -a "${replicas}" -eq "${replicas}" ]; then
-        
         # # Create each member object for initialization
         # for (( i = 0; i < $replicas; i++ )); do
         #     members[$i]="{ _id: ${i}, host: "${statefulSetObject}-${i}.${statefulService}.default.svc.cluster.local:${port}"}"
@@ -52,30 +56,15 @@ if [ "${1:0:1}" = "-" ]; then
         # sleep 20
 
         # # Check that replica set has initialized 
-#         rsCount=0
-#         while [[ ${rsCount} -ne ${replicas} ]]; do
-        
-#             # # heredoc indent is not working as it is enclose inside quote
-#             # # thus, the closing heredoc must not have any indentation other it returns an error
-#             kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
-#                 db.getSiblingDB('admin').auth('ivan', 'ivan')
-#                 rs.status()
-# EOF" > rs_status.txt
-
-#             rsCount=$(grep -c '"health" : 1' rs_status.txt)
-#         done
-
-#         rm -rf rs_status.txt
-
-            kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
-                db.getSiblingDB('admin').auth('ivan', 'ivan');
-                while (
-                    rs.status().hasOwnProperty('myState') &&
-                    rs.status().myState != 1
-                ) {
-                    print('.');
-                    sleep(1000);
-                };
+        kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
+            db.getSiblingDB('admin').auth('ivan', 'ivan');
+            while (
+                rs.status().hasOwnProperty('myState') &&
+                rs.status().myState != 1
+            ) {
+                print('.');
+                sleep(1000);
+            };
 EOF"
 
 
