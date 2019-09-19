@@ -11,24 +11,28 @@
 # 2. mainfestFilename
 # 3. replicas for number of replicas > must be inline with the manifest
 
+set -e
 
+# General variables
 create_secret_file=mongo_db_secret
 manifest_file=mongodb-statefulset-manifest
 initialize_replica_file=initialize_replicaset
-statefulSetName="mongod"
+create_rootAdmin=create_rootAdmin
+
 replicas=1
+statefulSetName="mongod"
+statefulService="mongo-statefulset-service"
+containerName="mongod-container"
+replSetName="MainRepSet"
+
+# Variable specific to this file only
 maxAttempts=30
 numAttempts=0
 
 # _______  STEP 1: CREATE KEYFILE  ________ 
 echo "1. Generating a secret with kubernetes."
 ./${create_secret_file}.sh
-
-# Name of the secret is the same as the script file name
-while [[ $secret != ${create_secret_file} ]]; do
-    read "secret type data age" <<< $(kubectl get secrets ${create_secret_file} | grep ${create_secret_file})
-done
-echo "Secret ready."
+echo "Secret was successfully generated."
 echo "Step 1 of ... complete."
 
 # _______  STEP 2: APPLY STATEFUL SET MANIFEST  ________ 
@@ -68,14 +72,15 @@ echo "Step 2 of ... complete."
 echo "3. Initializing replicas."
 
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
-./${initialize_replica_file}.sh -- 1 mongo-statefulset-service mongod mongod-container MainRepSet 
+./${initialize_replica_file}.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
 echo "Replicaset are all initialized and ready."
 echo "Step 3 of ... complete."
 
-# _______  STEP 4: CREATE USERS  ________ 
-echo "4. Creating minimum user config."
-
-
+# _______  STEP 4: CREATE ROOT ADMIN USER  ________ 
+echo "4. Creating the root Admin user ."
+./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName}
+echo "Root admin user was successfully created."
+echo "Step 4 of ... complete."
 
 
 # Once confirmed all replicas started, 
