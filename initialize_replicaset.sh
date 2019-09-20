@@ -1,12 +1,13 @@
 #! /bin/bash
 
-# launch program as <program_name> - [options]
-# options are
+# launch program as <program_name> -- [args][options]
+# args are
 # 1. number of replicas > 3
 # 2. name of the stateful service from manifest > mongo-statefulset-service
 # 3. name of the statefulSet object from manifest > mongod
 # 4. name of the template container from manifest > mongod-container
 # 5. name of replSet provide as argument cmd in the manifest > MainRepSet
+# option is
 # 6. port > 27017
 
 if [ "${1:0:2}" = "--" ]; then
@@ -14,12 +15,12 @@ if [ "${1:0:2}" = "--" ]; then
 
     # Check that the right number of arguments was passed
     if [ "${#@}" -lt 5 ] || [ "${#@}" -gt 6 ]; then
-        echo "you must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]" 
+        echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]" 
         exit 1
     fi
 
     if [ -n "${6}" ] && [ "${6}" -eq "${6}" ] && [ "${6}" -ge 0 ] 2>/dev/null; then
-        port=$6
+        port="${6}"
     else
         port=27017
     fi
@@ -41,7 +42,7 @@ if [ "${1:0:2}" = "--" ]; then
         
         # Concatenate each member object all together
         for (( i = 0; i < "${replicas}"; i++ )); do
-            if [ $i -eq $(( replicas - 1 )) ]; then
+            if [ "${i}" -eq $(( replicas - 1 )) ]; then
                 concatmembers+="${members[$i]}"
             else
                 concatmembers+="${members[$i]},"
@@ -84,23 +85,12 @@ EOF" > tempRepSet.txt
             exit 1
         fi
 
-#         # Check that replica set has initialized 
-#         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-#             while (
-#                 rs.status().hasOwnProperty('myState') &&
-#                 rs.status().myState != 1
-#             ) {
-#                 print('.');
-#                 sleep(1000);
-#             };
-# EOF"      
-
     else
-        echo "The arguments for replicas must be an integer between 0 and 10" 
+        echo "The number of replicas must be between 0 and 10" 
         exit 1
     fi
 
 else
-    echo "you must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]"
+    echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]"
     exit 1
 fi
