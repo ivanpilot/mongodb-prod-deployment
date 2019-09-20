@@ -14,19 +14,20 @@
 set -e
 
 # General variables
-create_secret_file=mongo_db_secret
-mongodb_manifest_file=mongodb-statefulset-manifest
-storage_manifest_file=storage-days-db
-initialize_replica_file=initialize_replicaset
-create_rootAdmin=create_rootAdmin
+create_secret_file=mongodb_replica_secret
+mongodb_manifest_file=statefulset-manifest-test
+storage_manifest_file=storage-test
+initialize_replica_file=initialize_replicaset 
+create_rootAdmin_user=create_rootAdmin 
+create_standard_user=create_standardUser 
 
-replicas=1
-statefulSetName="mongod"
-statefulService="mongo-statefulset-service"
-containerName="mongod-container"
-replSetName="MainRepSet"
-storageName="local"
-database="db_days"
+replicas=1 
+statefulSetName="mongod" 
+statefulService="mongo-service"
+containerName="mongod-container" 
+replSetName="MainRepSet" 
+storageName="local-storage"
+database="db_days" 
 
 # adminUsername="${MONGODB_ROOT_ADMIN_NAME}"
 # adminPassword="${MONGODB_ROOT_ADMIN_PASSWORD}"
@@ -47,7 +48,7 @@ echo "Step 1 of 5 complete."
 
 # _______  STEP 2: APPLY STATEFUL SET MANIFEST  ________ 
 echo "2. Apply statefuleSet manifest to deploy mongodb replicas."
-./${deploy_manifest}.sh -- ${replicas} ${statefulSetName} ${mongodb_manifest_file} ${storage-days-db} ${storageName}
+./${deploy_manifest}.sh -- ${replicas} ${statefulSetName} ${mongodb_manifest_file} ${storage_manifest_file} ${storageName}
 echo "mongodb was successfully deployed."
 echo "Step 2 of 5 complete."
 
@@ -60,13 +61,13 @@ echo "Step 3 of 5 complete."
 
 # _______  STEP 4: CREATE ROOT ADMIN USER  ________ 
 echo "4. Create the root Admin user."
-./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName} -u ${adminUsername} -p ${adminPassword}
+./${create_rootAdmin_user}.sh -- ${statefulSetName} ${containerName} -u ${adminUsername} -p ${adminPassword}
 echo "Root admin user was successfully created."
 echo "Step 4 of 5 complete."
 
 # _______  STEP 5: CREATE STANDARD USER  ________ 
 echo "5. Create standard user."
-./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+./${create_standard_user}.sh -- ${statefulSetName} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
 echo "Root admin user was successfully created."
 echo "Step 5 of 5 complete."
 
