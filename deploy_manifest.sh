@@ -9,7 +9,7 @@
 if [ "${1:0:2}" = "--" ]; then
     shift
 
-    if [ "${#@}" -ne 3 ]; then
+    if [ "${#@}" -ne 5 ]; then
         echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename]"
         exit 1
     fi
@@ -18,9 +18,30 @@ if [ "${1:0:2}" = "--" ]; then
 
         replicas="${1}"
         statefulSetName="${2}"
-        manifest_file="${3}.yml"
+        mongod_manifest_file="${3}.yml"
+        storage_manifest_file="${4}.yml"
+        storage_name="${5}.yml"
+    
+    # Deploy storage class
+        kubectl apply -f "${storage_manifest_file}"
+        sleep 10
 
-        kubectl apply -f "${manifest_file}"
+        # Check if storageClass has been provisioned
+        counterStorage=0
+        maxStorage=15
+        while [[ "${name}" != "${storageName}" && "${counterStorage}" -le "${maxStorage}" ]]; do
+            read name provisioner age <<< $(kubectl get storageClass ${storageName} | grep ${storageName})
+            sleep 2
+            (( counterStorage++ ))
+        done
+
+        if [ -z "${name}" ]; then
+            echo "No storage class was created. Abort."
+            exit 1
+        fi
+
+    # Deploy mongodb
+        kubectl apply -f "${mongod_manifest_file}"
         sleep 20
 
         # Check if all replicas started up

@@ -15,7 +15,8 @@ set -e
 
 # General variables
 create_secret_file=mongo_db_secret
-manifest_file=mongodb-statefulset-manifest
+mongodb_manifest_file=mongodb-statefulset-manifest
+storage_manifest_file=storage-days-db
 initialize_replica_file=initialize_replicaset
 create_rootAdmin=create_rootAdmin
 
@@ -24,10 +25,7 @@ statefulSetName="mongod"
 statefulService="mongo-statefulset-service"
 containerName="mongod-container"
 replSetName="MainRepSet"
-
-# Variable specific to this file only
-maxAttempts=30
-numAttempts=0
+storageName="local"
 
 # _______  STEP 1: CREATE KEYFILE  ________ 
 echo "1. Create a random secret with kubernetes."
@@ -37,7 +35,7 @@ echo "Step 1 of ... complete."
 
 # _______  STEP 2: APPLY STATEFUL SET MANIFEST  ________ 
 echo "2. Apply statefuleSet manifest to deploy mongodb replicas."
-./${deploy_manifest}.sh
+./${deploy_manifest}.sh -- ${replicas} ${statefulSetName} ${mongodb_manifest_file} ${storage-days-db} ${storageName}
 echo "mongodb was successfully deployed."
 echo "Step 2 of ... complete."
 
