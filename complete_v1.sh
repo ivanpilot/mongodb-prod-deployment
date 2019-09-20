@@ -30,13 +30,13 @@ maxAttempts=30
 numAttempts=0
 
 # _______  STEP 1: CREATE KEYFILE  ________ 
-echo "1. Generating a secret with kubernetes."
+echo "1. Create a random secret with kubernetes."
 ./${create_secret_file}.sh
 echo "Secret was successfully generated."
 echo "Step 1 of ... complete."
 
 # _______  STEP 2: APPLY STATEFUL SET MANIFEST  ________ 
-echo "2. Applying statefuleSet manifest to deploy mongod replicaset."
+echo "2. Apply statefuleSet manifest to deploy mongodb replicas."
 kubectl apply -f ${manifest_file}.yml
 
 # Check if all replicas started up
@@ -69,7 +69,7 @@ echo "Statefulset ready."
 echo "Step 2 of ... complete."
 
 # _______  STEP 3: INITIATE THE REPLICA SET  ________ 
-echo "3. Initializing replicas."
+echo "3. Initialize replicaset."
 
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
 ./${initialize_replica_file}.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
@@ -77,7 +77,7 @@ echo "Replicaset are all initialized and ready."
 echo "Step 3 of ... complete."
 
 # _______  STEP 4: CREATE ROOT ADMIN USER  ________ 
-echo "4. Creating the root Admin user ."
+echo "4. Create the root Admin user."
 ./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName}
 echo "Root admin user was successfully created."
 echo "Step 4 of ... complete."
