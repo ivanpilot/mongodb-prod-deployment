@@ -4,19 +4,19 @@ if [ "${1:0:2}" = "--" ]; then
     shift
 
     # Check that the right number of arguments was passed
-    if [ -z "${1}" ] || [ -z "${2}" ] || [ "${#@}" -lt 1 ] || [ "${#@}" -gt 2 ]; then
+    if [ -z "${1}" ] || [ -z "${2}" ] || [ "${#@}" -ne 2 ]; then
         echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name]"
         exit 1
     fi
 
-    statefulSetObject=$1
-    containerName=$2
+    statefulSetObject="${1}"
+    containerName="${2}"
 
     # Create the root admin user
     kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
         db.getSiblingDB('admin').createUser({
-            user: '${ROOT_ADMIN_NAME}',
-            pwd: '${ROOT_ADMIN_PASSWORD}',
+            user: '${MONGODB_ROOT_ADMIN_NAME}',
+            pwd: '${MONGODB_ROOT_ADMIN_PASSWORD}',
             roles: [ { role: 'root', db: 'admin' } ]
         })
 EOF"
@@ -27,15 +27,15 @@ EOF"
     max=15
     while [[ "${isRootAdminUserCreated}" == "false" && "${counter}" -le "${max}" ]]; do
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-            if (db.getSiblingDB('admin').auth('${ROOT_ADMIN_NAME}', '${ROOT_ADMIN_PASSWORD}')) {
+            if (db.getSiblingDB('admin').auth('${MONGODB_ROOT_ADMIN_NAME}', '${MONGODB_ROOT_ADMIN_PASSWORD}')) {
                 true
             } else {
                 false
             }
-EOF" > tempAuth.txt
+EOF" > tempAuthAdmin.txt
         
-        isRootAdminUserCreated=$(tail -n 2 tempAuth.txt | grep -v "^bye")
-        rm ./tempAuth.txt
+        isRootAdminUserCreated=$(tail -n 2 tempAuthAdmin.txt | grep -v "^bye")
+        rm ./tempAuthAdmin.txt
         sleep 2
         (( counter++ ))
     done

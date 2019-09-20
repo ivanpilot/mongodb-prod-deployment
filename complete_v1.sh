@@ -26,6 +26,7 @@ statefulService="mongo-statefulset-service"
 containerName="mongod-container"
 replSetName="MainRepSet"
 storageName="local"
+database="db_days"
 
 # _______  STEP 1: CREATE KEYFILE  ________ 
 echo "1. Create a random secret with kubernetes."
@@ -40,7 +41,7 @@ echo "mongodb was successfully deployed."
 echo "Step 2 of ... complete."
 
 # _______  STEP 3: INITIATE THE REPLICA SET  ________ 
-echo "3. Initialize replicaset."
+echo "3. Initialize replicas."
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
 ./${initialize_replica_file}.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
 echo "Replicas are all initialized and ready."
@@ -49,6 +50,12 @@ echo "Step 3 of ... complete."
 # _______  STEP 4: CREATE ROOT ADMIN USER  ________ 
 echo "4. Create the root Admin user."
 ./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName}
+echo "Root admin user was successfully created."
+echo "Step 4 of ... complete."
+
+# _______  STEP 5: CREATE STANDARD USER  ________ 
+echo "5. Create standard user."
+./${create_rootAdmin}.sh -- ${statefulSetName} ${containerName} ${database}
 echo "Root admin user was successfully created."
 echo "Step 4 of ... complete."
 
