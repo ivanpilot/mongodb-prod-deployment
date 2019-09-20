@@ -37,40 +37,12 @@ echo "Step 1 of ... complete."
 
 # _______  STEP 2: APPLY STATEFUL SET MANIFEST  ________ 
 echo "2. Apply statefuleSet manifest to deploy mongodb replicas."
-kubectl apply -f ${manifest_file}.yml
-
-# Check if all replicas started up
-# Keep checking if this is not the case
-# 90s duration for check
-while [[ $numPodsRunning -ne $replicas ]]; do
-    numPodsRunning=0
-    if [ $numAttempts -eq $maxAttempts ]; then
-        echo "The replica set did not manage to start properly."
-        echo "Exiting the program."
-        exit 1
-    fi
-    if (( $numAttempts > 0 )); then
-        sleep 5
-    fi
-
-
-    for (( i = 0; i < $replicas; i++ )); do
-        read pods[$i] readys[$i] status[$i] ages[$i] <<< $(kubectl get pods ${pods[$i]} | grep ${statefulSetName})
-
-        if [ ${status[$i]} == 'Running' ]; then
-            (( numPodsRunning++ ))
-            # echo "pod is_${pods[$i]}_running is running"
-        fi
-    done
-    (( numAttempts++ ))
-    echo "The number of pods running is ${numPodsRunning}"
-done
-echo "Statefulset ready."
+./${deploy_manifest}.sh
+echo "mongodb was successfully deployed."
 echo "Step 2 of ... complete."
 
 # _______  STEP 3: INITIATE THE REPLICA SET  ________ 
 echo "3. Initialize replicaset."
-
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
 ./${initialize_replica_file}.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
 echo "Replicas are all initialized and ready."

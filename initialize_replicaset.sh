@@ -27,11 +27,11 @@ if [ "${1:0:2}" = "--" ]; then
 
     if [ -n "${1}" ] && [ "${1}" -eq "${1}" ] && [ "${1}" -gt 0 ] && [ "${1}" -le 10 ]; then
 
-        replicas=$1
-        statefulService=$2
-        statefulSetObject=$3
-        containerName=$4
-        replSetName=$5
+        replicas="${1}"
+        statefulService="${2}"
+        statefulSetObject="${3}"
+        containerName="${4}"
+        replSetName="${5}"
 
         initializeContent="{_id: '${replSetName}', version: 1, members: "
 
@@ -86,7 +86,7 @@ EOF" > tempRepSet.txt
         fi
 
     else
-        echo "The number of replicas must be between 0 and 10" 
+        echo "The number of replicas must be between 1 and 10" 
         exit 1
     fi
 
