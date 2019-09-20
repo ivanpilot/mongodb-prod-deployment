@@ -14,7 +14,7 @@ if [ "${1:0:2}" = "--" ]; then
     containerName="${2}"
     database="${3}"
 
-    Create the standard user
+    # Create the standard user
     kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
         db.getSiblingDB('admin').auth('${MONGODB_ROOT_ADMIN_NAME}', '${MONGODB_ROOT_ADMIN_PASSWORD}')
         db.getSiblingDB('${database}').createUser({

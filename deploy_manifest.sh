@@ -12,7 +12,7 @@ if [ "${1:0:2}" = "--" ]; then
     shift
 
     if [ "${#@}" -ne 5 ]; then
-        echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename]"
+        echo "You must provide the mandatory arguments such as -- [replicas] [statefulset object] [mongodb manifest filename] [storage manifest filename] [storage name]"
         exit 1
     fi
 
@@ -73,6 +73,6 @@ if [ "${1:0:2}" = "--" ]; then
         exit 1
     fi
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename]"
+    echo "You must provide the mandatory arguments such as -- [replicas] [statefulset object] [mongodb manifest filename] [storage manifest filename] [storage name]"
     exit 1
 fi
