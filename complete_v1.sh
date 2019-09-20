@@ -73,7 +73,7 @@ echo "3. Initialize replicaset."
 
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
 ./${initialize_replica_file}.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
-echo "Replicaset are all initialized and ready."
+echo "Replicas are all initialized and ready."
 echo "Step 3 of ... complete."
 
 # _______  STEP 4: CREATE ROOT ADMIN USER  ________ 

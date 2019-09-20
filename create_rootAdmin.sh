@@ -27,7 +27,7 @@ EOF"
     max=15
     while [[ "${isRootAdminUserCreated}" == "false" && "${counter}" -le "${max}" ]]; do
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-            if (db.getSiblingDB('admin').auth('ivan', 'ivan')) {
+            if (db.getSiblingDB('admin').auth('${ROOT_ADMIN_NAME}', '${ROOT_ADMIN_PASSWORD}')) {
                 true
             } else {
                 false
@@ -36,6 +36,7 @@ EOF" > tempAuth.txt
         
         isRootAdminUserCreated=$(tail -n 2 tempAuth.txt | grep -v "^bye")
         rm ./tempAuth.txt
+        sleep 2
         (( counter++ ))
     done
 
