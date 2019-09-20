@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 if [ "${1:0:2}" = "--" ]; then
     shift

@@ -10,6 +10,8 @@
 # option is
 # 6. port > 27017
 
+set -e
+
 if [ "${1:0:2}" = "--" ]; then
     shift
 

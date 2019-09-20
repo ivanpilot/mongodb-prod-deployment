@@ -28,6 +28,8 @@ replSetName="MainRepSet"
 storageName="local"
 database="db_days"
 
+# Launch various scripts in the below order order
+
 # _______  STEP 1: CREATE KEYFILE  ________ 
 echo "1. Create a random secret with kubernetes."
 ./${create_secret_file}.sh

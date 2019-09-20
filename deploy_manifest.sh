@@ -6,6 +6,8 @@
 # 2. name of the statefulSet object from manifest > mongod
 # 3. name of kubernetes manifest file
 
+set -e
+
 if [ "${1:0:2}" = "--" ]; then
     shift
 
