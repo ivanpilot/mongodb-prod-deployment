@@ -7,10 +7,10 @@ filename="${0:2:(( filenameLength - 2 - 3 ))}"
 openssl rand -base64 756 > ./secret.txt
 
 # Create a kubernetes secret from the generated password
-kubectl create secret generic "${filename}" --from-file=internal-auth-mongodb-keyfile=./secret.txt
+kubectl create secret generic "${filename}" --from-file=internal-auth-mongodb-keyfile=./secret.txt &>/dev/null
 
 rm -rf ./secret.txt
-sleep 10
+sleep 5
 
 # Confirm secret was created
 counter=0

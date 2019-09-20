@@ -40,32 +40,32 @@ if [ "${1:0:2}" = "--" ]; then
             exit 1
         fi
 
-    # Deploy mongodb
-        kubectl apply -f "${mongod_manifest_file}"
-        sleep 20
+    # # Deploy mongodb
+    #     kubectl apply -f "${mongod_manifest_file}"
+    #     sleep 20
 
-        # Check if all replicas started up
-        counter=0
-        max=15
-        while [[ "${numPodsRunning}" -ne "${replicas}" ]]; do
-            numPodsRunning=0
+    #     # Check if all replicas started up
+    #     counter=0
+    #     max=15
+    #     while [[ "${numPodsRunning}" -ne "${replicas}" ]]; do
+    #         numPodsRunning=0
             
-            if [ "${counter}" -eq "${max}" ]; then
-                echo "The replica set did not manage to start properly. Abort."
-                exit 1
-            fi
+    #         if [ "${counter}" -eq "${max}" ]; then
+    #             echo "The replica set did not manage to start properly. Abort."
+    #             exit 1
+    #         fi
 
-            for (( i = 0; i < "${replicas}"; i++ )); do
-                read pods[$i] ready[$i] status[$i] age[$i] <<< $(kubectl get pods ${pods[$i]} | grep ${statefulSetName})
+    #         for (( i = 0; i < "${replicas}"; i++ )); do
+    #             read pods[$i] ready[$i] status[$i] age[$i] <<< $(kubectl get pods ${pods[$i]} | grep ${statefulSetName})
 
-                if [ ${status[$i]} == 'Running' ]; then
-                    (( numPodsRunning++ ))
-                fi
-            done
+    #             if [ ${status[$i]} == 'Running' ]; then
+    #                 (( numPodsRunning++ ))
+    #             fi
+    #         done
 
-            sleep 5
-            (( counter++ ))
-        done
+    #         sleep 5
+    #         (( counter++ ))
+    #     done
     else
         echo "The number of replicas must be between 1 and 10."
         exit 1

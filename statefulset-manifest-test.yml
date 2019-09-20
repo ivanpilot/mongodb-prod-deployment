@@ -31,7 +31,7 @@ spec:
             volumes:
                 - name: secrets-volume
                   secret:
-                      secretName: mongo_db_secret
+                      secretName: mongodb-replica-secret
                       defaultMode: 256
             containers:
                 - name: mongod-container
