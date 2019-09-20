@@ -1,5 +1,4 @@
 #! /bin/bash
-set -e
 
 filenameLength="${#0}"
 filename="${0:2:(( filenameLength - 2 - 3 ))}"

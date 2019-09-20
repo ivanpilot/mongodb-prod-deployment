@@ -1,25 +1,87 @@
 #! /bin/bash
-set -e
 
 if [ "${1:0:2}" = "--" ]; then
     shift
 
     # Check that the right number of arguments was passed
-    if [ -z "${1}" ] || [ -z "${2}" ] || [ -z "${3}" ] || [ "${#@}" -ne 3 ]; then
-        echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] [database name]"
+    if [ "${#}" -ne 11 ]; then
+        echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] [database name] -adminu [adminUsername] -adminp [adminPassword] -u [username] -p [password]"
         exit 1
     fi
 
     statefulSetObject="${1}"
     containerName="${2}"
     database="${3}"
+    shift 3
 
+    # allocating -adminu and -adminp flags accordingly
+    if [ "${1}" = "-adminu" ]; then
+        shift
+        adminUsername="${1}"
+        shift
+
+        if [ "${1}" = "-adminp" ]; then
+            shift
+            adminPassword="${1}"
+        else
+            echo "You must provide an admin password."
+            exit 1
+        fi
+    elif [ "${1}" = "-adminp" ]; then
+        shift
+        adminPassword="${1}"
+        shift
+
+        if [ "${1}" = "-adminu" ]; then
+            shift
+            adminUsername="${1}"
+        else
+            echo "You must provide an admin username."
+            exit 1
+        fi
+    else
+        echo "You must provide an admin username and an admin password in the correct order."
+        exit 1
+    fi
+
+    shift
+
+    # allocating -u and -p flags accordingly
+    if [ "${1:0:2}" = "-u" ]; then
+        shift
+        username="${1}"
+        shift
+
+        if [ "${1:0:2}" = "-p" ]; then
+            shift
+            password="${1}"
+        else
+            echo "You must provide a password."
+            exit 1
+        fi
+    elif [ "${1:0:2}" = "-p" ]; then
+        shift
+        password="${1}"
+        shift
+
+        if [ "${1:0:2}" = "-u" ]; then
+            shift
+            username="${1}"
+        else
+            echo "You must provide a username."
+            exit 1
+        fi
+    else
+        echo "You must provide a username and a password in the correct order."
+        exit 1
+    fi
+    
     # Create the standard user
     kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-        db.getSiblingDB('admin').auth('${MONGODB_ROOT_ADMIN_NAME}', '${MONGODB_ROOT_ADMIN_PASSWORD}')
+        db.getSiblingDB('admin').auth('${adminUsername}', '${adminPassword}')
         db.getSiblingDB('${database}').createUser({
-            user: '${MONGODB_USER_NAME}',
-            pwd: '${MONGODB_USER_PASSWORD}',
+            user: '${username}',
+            pwd: '${password}',
             roles: [ {role:'readWrite', db: '${database}'} ]
         });
 EOF"
@@ -30,7 +92,7 @@ EOF"
     max=15
     while [[ "${isStandardUserCreated}" == "false" && "${counter}" -le "${max}" ]]; do
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-            if (db.getSiblingDB('${database}').auth('${MONGODB_USER_NAME}', '${MONGODB_USER_PASSWORD}')) {
+            if (db.getSiblingDB('${database}').auth('${username}', '${password}')) {
                 true
             } else {
                 false
@@ -49,6 +111,6 @@ EOF" > tempAuthUser.txt
     fi
 
 else
-    echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] [database name]"
+    echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] [database name] -adminu [adminUsername] -adminp [adminPassword] -u [username] -p [password]"
     exit 1
 fi

@@ -10,13 +10,11 @@
 # option is
 # 6. port > 27017
 
-set -e
-
 if [ "${1:0:2}" = "--" ]; then
     shift
 
     # Check that the right number of arguments was passed
-    if [ "${#@}" -lt 5 ] || [ "${#@}" -gt 6 ]; then
+    if [ "${#}" -lt 5 ] || [ "${#}" -gt 6 ]; then
         echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]" 
         exit 1
     fi
