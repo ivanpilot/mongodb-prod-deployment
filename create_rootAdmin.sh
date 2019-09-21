@@ -52,7 +52,7 @@ if [ "${1:0:2}" = "--" ]; then
         })
 EOF"
 
-    # Check if root admin user was created
+    echo "Checking if root admin user was created."
     isRootAdminUserCreated="false"
     counter=0
     max=15
@@ -75,6 +75,7 @@ EOF" > tempAuthAdmin.txt
         echo "Root Admin user could not be created. Abort."
         exit 1
     fi
+    echo "Confirmed - root admin user created."
 
 else
     echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] -u [username] -p [password]"

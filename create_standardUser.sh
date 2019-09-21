@@ -86,7 +86,7 @@ if [ "${1:0:2}" = "--" ]; then
         });
 EOF"
 
-    # Check if standard user was created
+    echo "Checking if standard user was created."
     isStandardUserCreated="false"
     counter=0
     max=15
@@ -109,6 +109,7 @@ EOF" > tempAuthUser.txt
         echo "Root Admin user could not be created. Abort."
         exit 1
     fi
+    echo "Confirmed - standard user created."
 
 else
     echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] [database name] -adminu [adminUsername] -adminp [adminPassword] -u [username] -p [password]"

@@ -60,7 +60,7 @@ EOF"
         # Wait for replica set to initialize
         sleep 20
 
-        # Check if replica set was created 
+        echo "Checking if all replicas set were initialized." 
         isReplicaSetCreated="false"
         counter=0
         max=15
@@ -84,6 +84,7 @@ EOF" > tempRepSet.txt
             echo "Replica set could not be initialized. Abort."
             exit 1
         fi
+        echo "Confirmed - all replicas initialized." 
 
     else
         echo "The number of replicas must be between 1 and 10" 

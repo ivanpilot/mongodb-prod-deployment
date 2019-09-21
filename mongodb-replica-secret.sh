@@ -12,7 +12,8 @@ kubectl create secret generic "${filename}" --from-file=internal-auth-mongodb-ke
 rm -rf ./secret.txt
 sleep 5
 
-# Confirm secret was created
+echo "Checking if secret was created."
+
 counter=0
 max=15
 # Name of the secret is the same as the script file name
@@ -26,3 +27,5 @@ if [ -z "${secret}" ]; then
     echo "No secret was created. Abort."
     exit 1
 fi
+
+echo "Confirmed - secret was created."

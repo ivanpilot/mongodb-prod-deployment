@@ -26,7 +26,7 @@ if [ "${1:0:2}" = "--" ]; then
         kubectl apply -f "${storage_manifest_file}"
         sleep 10
 
-        # Check if storageClass has been provisioned
+        echo "Checking if storageClass has been provisioned."
         counterStorage=0
         maxStorage=15
         while [[ "${name}" != "${storageName}" && "${counterStorage}" -le "${maxStorage}" ]]; do
@@ -38,12 +38,13 @@ if [ "${1:0:2}" = "--" ]; then
             echo "No storage class was created. Abort."
             exit 1
         fi
+        echo "Confirmed - storageClass provisioned."
 
     # Deploy mongodb
         kubectl apply -f "${mongod_manifest_file}"
         sleep 20
 
-        # Check if all replicas started up
+        echo "Checking if all replicas started up."
         counter=0
         max=15
         while [[ "${numPodsRunning}" -ne "${replicas}" ]]; do
@@ -65,6 +66,7 @@ if [ "${1:0:2}" = "--" ]; then
             sleep 5
             (( counter++ ))
         done
+        echo "Confirmed - all replicas set started up."
     else
         echo "The number of replicas must be between 1 and 10."
         exit 1
