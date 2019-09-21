@@ -54,7 +54,7 @@ if [ "${1:0:2}" = "--" ]; then
         
         # Initialize the replica set inside the mongo container
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo << EOF
-            rs.initiate($(initializeContent))
+            rs.initiate(${initializeContent})
 EOF"
 
         # Wait for replica set to initialize
