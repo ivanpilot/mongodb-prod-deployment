@@ -14,7 +14,7 @@
 set -e
 
 # General variables
-mongodb_manifest_file=statefulset-manifest-test
+mongodb_manifest_file=manifest-test
 storage_manifest_file=storage-test
 
 replicas=1 
@@ -25,6 +25,7 @@ replSetName="MainRepSet"
 replicaSecretName="mongodb-replica-secret" 
 storageName="local-storage"
 database="db_days" 
+collectionName="days" 
 
 # adminUsername="${MONGODB_ROOT_ADMIN_NAME}"
 # adminPassword="${MONGODB_ROOT_ADMIN_PASSWORD}"
@@ -75,3 +76,10 @@ echo "Step 6 of 6 complete."
 echo ""
 
 echo "Everything has launched successfully. Enjoy!"
+echo ""
+echo ""
+
+# _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
+echo "Extra. Seed the database."
+./seed-db.sh -- ${statefulSetName} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+echo "ALL DONE."
