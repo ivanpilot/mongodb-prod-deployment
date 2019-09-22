@@ -86,7 +86,7 @@ if [ "${1:0:2}" = "--" ]; then
             sleep 5
             (( counter++ ))
         done
-        echo "Confirmed - all replicas set started up."
+        echo "Confirmed - all replicas started up."
     else
         echo "The number of replicas must be between 1 and 10."
         exit 1

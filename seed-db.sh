@@ -8,8 +8,10 @@
 #     show users;
 # EOF"
 
+echo "Currently seeding database..."
+
 kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
-    db.getSiblingDB('admin').auth('user', 'user');
+    db.getSiblingDB('db_days').auth('ivan', 'ivan');
     use db_days;
     db.createCollection('days');
     db.days.insert([
@@ -46,3 +48,5 @@ kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
     ])
     db.days.count({})
 EOF"
+
+echo "Database was successfully seed."
