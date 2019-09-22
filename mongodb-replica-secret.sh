@@ -10,7 +10,17 @@ openssl rand -base64 756 > ./secret.txt
 kubectl create secret generic "${filename}" --from-file=internal-auth-mongodb-keyfile=./secret.txt &>/dev/null
 
 rm -rf ./secret.txt
-sleep 5
+echo "Waiting for secret to be created."
+timer=1
+while [ "${timer}" -le 5 ]; do
+    sleep 1
+    if [ "${timer}" -lt 5 ]; then
+        printf '.'
+    else
+        echo '.'
+    fi
+    (( timer++ ))
+done
 
 echo "Checking if secret was created."
 

@@ -23,8 +23,18 @@ if [ "${1:0:2}" = "--" ]; then
         storageName="${5}"
 
     # Deploy storage class
+        echo "Waiting for storageClass to be provisioned."
         kubectl apply -f "${storage_manifest_file}"
-        sleep 10
+        timer=1
+        while [ "${timer}" -le 10 ]; do
+            sleep 1
+            if [ "${timer}" -lt 10 ]; then
+                printf '.'
+            else
+                echo '.'
+            fi
+            (( timer++ ))
+        done
 
         echo "Checking if storageClass has been provisioned."
         counterStorage=0
@@ -41,8 +51,18 @@ if [ "${1:0:2}" = "--" ]; then
         echo "Confirmed - storageClass provisioned."
 
     # Deploy mongodb
+        echo "Waiting for all replicas to start."
         kubectl apply -f "${mongod_manifest_file}"
-        sleep 20
+        timer=1
+        while [ "${timer}" -le 15 ]; do
+            sleep 1
+            if [ "${timer}" -lt 15 ]; then
+                printf '.'
+            else
+                echo '.'
+            fi
+            (( timer++ ))
+        done
 
         echo "Checking if all replicas started up."
         counter=0

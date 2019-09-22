@@ -37,7 +37,7 @@ if [ "${1:0:2}" = "--" ]; then
 
         # Create each member object for initialization
         for (( i = 0; i < "${replicas}"; i++ )); do
-            members[$i]="{ _id: ${i}, host: "${statefulSetObject}-${i}.${statefulService}.default.svc.cluster.local:${port}"}"
+            members[$i]="{ _id: ${i}, host: '"${statefulSetObject}-${i}.${statefulService}.default.svc.cluster.local:${port}"'}"
         done
         
         # Concatenate each member object all together
@@ -50,15 +50,24 @@ if [ "${1:0:2}" = "--" ]; then
         done
 
         # Wrapped the assembled members object with [] to become an array
-        initializeContent+="['${concatmembers}']}"
+        initializeContent+="[${concatmembers}]}"
         
         # Initialize the replica set inside the mongo container
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo << EOF
-            rs.initiate($(initializeContent))
+            rs.initiate(${initializeContent})
 EOF"
 
         echo "Waiting for replica set to initialize."
-        sleep 20
+        timer=1
+        while [ "${timer}" -le 20 ]; do
+            sleep 1
+            if [ "${timer}" -lt 20 ]; then
+                printf '.'
+            else
+                echo '.'
+            fi
+            (( timer++ ))
+        done
 
         echo "Checking if all replicas set were initialized." 
         isReplicaSetCreated="false"
@@ -84,7 +93,7 @@ EOF" > tempRepSet.txt
             echo "Replica set could not be initialized. Abort."
             exit 1
         fi
-        echo "Confirmed - all replicas initialized." 
+        echo "Confirmed - all replicas initialized and ready." 
 
     else
         echo "The number of replicas must be between 1 and 10" 
