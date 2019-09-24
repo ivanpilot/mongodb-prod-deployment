@@ -14,16 +14,18 @@
 # set -e >> replaceed by cleaning process
 
 # General variables
-mongodb_manifest_file=manifest-test
-storage_manifest_file=storage-test
+replica_manifest_filename=days-replica-manifest
+storage_manifest_filename=days-storageclass-manifest
 
-replicas=1 
+replicas=2
 statefulSetName="mongod" 
 statefulService="mongo-service"
 containerName="mongod-container" 
 replSetName="MainRepSet" 
 replicaSecretName="mongodb-replica-secret" 
-storageName="local-storage"
+storageName="days-storage"
+provisioner="gce-pd"
+diskType="pd-sdd"
 database="db_days" 
 collectionName="days" 
 
@@ -39,7 +41,7 @@ password="ivan"
 cleaning() {
     if [ $? -ne 0 ]; then
         echo "There was a problem during launch phase. Currently cleaning deployment."
-        ./cleaning.sh -- ${mongodb_manifest_file} ${storageName} ${replicaSecretName}
+        ./cleaning.sh -- ${replica_manifest_filename} ${storageName} ${replicaSecretName}
         echo "Deployment has been cleaned. Exiting now."
         exit 0
     fi
@@ -54,16 +56,23 @@ cleaning
 echo "Step 1 of 6 complete."
 echo ""
 
-# _______  STEP 2: GENERATE MANIFEST FILE  ________ 
-echo "2. Generate kubernetes statefuleSet manifest."
-./create_kube_manifest.sh -- ${replicas} ${mongodb_manifest_file} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName}
+# _______  STEP 2: GENERATE STORAGE CLASS MANIFEST FILE  ________ 
+echo "2. Generate storageClass manifest."
+./generate_storageclass_manifest.sh -- ${storage_manifest_filename} ${storageName} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName}
+cleaning
+echo "Step 2 of 6 complete."
+echo ""
+
+# _______  STEP 3: GENERATE REPLICA MANIFEST FILE  ________ 
+echo "2. Generate mongodb replica manifest."
+./generate_replica_manifest.sh -- ${replicas} ${replica_manifest_filename} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName}
 cleaning
 echo "Step 2 of 6 complete."
 echo ""
 
 # _______  STEP 3: APPLY STATEFUL SET MANIFEST  ________ 
 echo "3. Apply statefuleSet manifest to deploy mongodb replicas."
-./deploy_manifest.sh -- ${replicas} ${statefulSetName} ${mongodb_manifest_file} ${storage_manifest_file} ${storageName}
+./deploy_manifest.sh -- ${replicas} ${statefulSetName} ${replica_manifest_filename} ${storage_manifest_filename} ${storageName}
 cleaning
 echo "Step 3 of 6 complete."
 echo ""
