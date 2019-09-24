@@ -58,7 +58,7 @@ echo ""
 
 # _______  STEP 2: GENERATE STORAGE CLASS MANIFEST FILE  ________ 
 echo "2. Generate storageClass manifest."
-./generate_storageclass_manifest.sh -- ${storage_manifest_filename} ${storageName} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName}
+./generate_storageclass_manifest.sh -- ${storage_manifest_filename} ${storageName} ${provisioner} ${diskType}
 cleaning
 echo "Step 2 of 6 complete."
 echo ""
