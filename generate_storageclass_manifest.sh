@@ -23,7 +23,6 @@ provisioner: kubernetes.io/${provisioner}
 parameters:
     type: ${diskType}
 reclaimPolicy: Retain
-allowVolumeExpansion: true
 mountOptions:
     - debug
 volumeBindingMode: Immediate
