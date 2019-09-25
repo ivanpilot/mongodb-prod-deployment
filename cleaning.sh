@@ -19,6 +19,9 @@ if [ "${1:0:2}" = "--" ]; then
 
         echo "Deleting kubectl manifest file ${manifestFilename}"
         kubectl delete -f "${manifestFilename}"
+        
+        echo "Deleting storage class object"
+        kubectl delete storageClass "${storageName}"
 
         echo "Deleting pvc object"
         for (( i = 0; i < "${replicas}"; i++ )); do
@@ -27,9 +30,6 @@ if [ "${1:0:2}" = "--" ]; then
             unset name status volume capacity access modes storageClass age
         done
         
-        echo "Deleting storage class object"
-        kubectl delete storageClass "${storageName}"
-
         echo "Deleting secret keyfile"
         kubectl delete secret "${replicaSecret}"
     
