@@ -74,7 +74,7 @@ EOF"
 #         isReplicaSetCreated="false"
 #         counter=0
 #         max=15
-#         while [[ "${isReplicaSetCreated}" == "false" && "${counter}" -le "${max}" ]]; do
+#         while [[ "${isReplicaSetCreated}" != "true" && "${counter}" -le "${max}" ]]; do
 #             kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
 #                 if (rs.status().hasOwnProperty('myState') &&
 #                 rs.status().myState == ${replicas}) {
