@@ -22,7 +22,6 @@ metadata:
 provisioner: kubernetes.io/${provisioner}
 parameters:
     type: ${diskType}
-    fsType: xfs
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 mountOptions:
