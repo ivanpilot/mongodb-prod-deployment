@@ -65,6 +65,7 @@ if [ "${1:0:2}" = "--" ]; then
         done
 
         echo "Checking if all replicas started up."
+echo ""
         counter=0
         max=15
         while [[ "${numPodsRunning}" -ne "${replicas}" ]]; do
@@ -81,12 +82,26 @@ if [ "${1:0:2}" = "--" ]; then
                 if [ ${status[$i]} == 'Running' ]; then
                     (( numPodsRunning++ ))
                 fi
+echo "Status of pod ${pods[$i]} is ${status[$i]}"
             done
 
             sleep 5
             (( counter++ ))
         done
+echo ""
         echo "Confirmed - all replicas started up."
+        
+        echo "Waiting a bit before initializing replicas."
+        timer=1
+        while [ "${timer}" -le 10 ]; do
+            sleep 1
+            if [ "${timer}" -lt 10 ]; then
+                printf '.'
+            else
+                echo '.'
+            fi
+            (( timer++ ))
+        done
     else
         echo "The number of replicas must be between 1 and 10."
         exit 1

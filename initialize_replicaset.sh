@@ -82,8 +82,16 @@ EOF"
                     false
                 }
 EOF" > tempRepSet.txt
-        
+
+echo ""
+echo "content of tempRep is"
+cat ./tempRepSet
+echo ""
+
             isReplicaSetCreated=$(tail -n 2 tempRepSet.txt | grep -v "^bye")
+echo ""
+echo "isReplicaSetCreated is ${isReplicaSetCreated}"
+echo ""
             rm ./tempRepSet.txt
             (( counter++ ))
             sleep 2

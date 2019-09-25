@@ -54,53 +54,53 @@ cleaning() {
 echo "1. Create a random secret with kubernetes."
 ./mongodb-replica-secret.sh
 cleaning
-echo "Step 1 of 6 complete."
+echo "Step 1 of 7 complete."
 echo ""
 
 # _______  STEP 2: GENERATE STORAGE CLASS MANIFEST FILE  ________ 
 echo "2. Generate storageClass manifest."
 ./generate_storageclass_manifest.sh -- ${storage_manifest_filename} ${storageName} ${provisioner} ${diskType}
 cleaning
-echo "Step 2 of 6 complete."
+echo "Step 2 of 7 complete."
 echo ""
 
 # _______  STEP 3: GENERATE REPLICA MANIFEST FILE  ________ 
-echo "2. Generate mongodb replica manifest."
+echo "3. Generate mongodb replica manifest."
 ./generate_replica_manifest.sh -- ${replicas} ${replica_manifest_filename} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName} ${storageName}
 cleaning
-echo "Step 2 of 6 complete."
+echo "Step 3 of 7 complete."
 echo ""
 
-# _______  STEP 3: APPLY STATEFUL SET MANIFEST  ________ 
-echo "3. Apply statefuleSet manifest to deploy mongodb replicas."
+# _______  STEP 4: APPLY STATEFUL SET MANIFEST  ________ 
+echo "4. Apply statefuleSet manifest to deploy mongodb replicas."
 ./deploy_manifest.sh -- ${replicas} ${statefulSetName} ${replica_manifest_filename} ${storage_manifest_filename} ${storageName}
 cleaning
-echo "Step 3 of 6 complete."
+echo "Step 4 of 7 complete."
 echo ""
 
-# _______  STEP 4: INITIATE THE REPLICA SET  ________ 
-echo "4. Initialize replicas."
+# _______  STEP 5: INITIATE THE REPLICA SET  ________ 
+echo "5. Initialize replicas."
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
 ./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
 cleaning
-echo "Step 4 of 6 complete."
+echo "Step 5 of 7 complete."
 echo ""
 
 # _______  DEFINE PRIMARY REPLICA  ________ 
 primary=$(cat ./primary.txt)
 
-# _______  STEP 5: CREATE ROOT ADMIN USER  ________ 
-echo "5. Create the root Admin user."
+# _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
+echo "6. Create the root Admin user."
 ./create_rootAdmin.sh -- ${primary} ${containerName} -u ${adminUsername} -p ${adminPassword}
 cleaning
-echo "Step 5 of 6 complete."
+echo "Step 6 of 7 complete."
 echo ""
 
-# _______  STEP 6: CREATE STANDARD USER  ________ 
-echo "6. Create standard user."
+# _______  STEP 7: CREATE STANDARD USER  ________ 
+echo "7. Create standard user."
 ./create_standardUser.sh -- ${primary} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
 cleaning
-echo "Step 6 of 6 complete."
+echo "Step 7 of 7 complete."
 echo ""
 
 echo "Everything has launched successfully. Enjoy!"
