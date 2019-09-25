@@ -85,7 +85,7 @@ EOF" > tempRepSet.txt
 
 echo ""
 echo "content of tempRep is"
-cat ./tempRepSet
+cat ./tempRepSet.txt
 echo ""
 
             isReplicaSetCreated=$(tail -n 2 tempRepSet.txt | grep -v "^bye")

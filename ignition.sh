@@ -111,3 +111,5 @@ echo ""
 echo "Extra. Seed the database."
 ./seed-db.sh -- ${primary} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
 echo "ALL DONE."
+
+rm primary.txt
