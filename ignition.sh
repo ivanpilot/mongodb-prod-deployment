@@ -78,32 +78,32 @@ cleaning
 echo "Step 3 of 6 complete."
 echo ""
 
-# # _______  STEP 4: INITIATE THE REPLICA SET  ________ 
-# echo "4. Initialize replicas."
-# # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
-# ./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
-# cleaning
-# echo "Step 4 of 6 complete."
-# echo ""
-# # _______  STEP 5: CREATE ROOT ADMIN USER  ________ 
-# echo "5. Create the root Admin user."
-# ./create_rootAdmin.sh -- ${statefulSetName} ${containerName} -u ${adminUsername} -p ${adminPassword}
-# cleaning
-# echo "Step 5 of 6 complete."
-# echo ""
+# _______  STEP 4: INITIATE THE REPLICA SET  ________ 
+echo "4. Initialize replicas."
+# <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
+./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
+cleaning
+echo "Step 4 of 6 complete."
+echo ""
+# _______  STEP 5: CREATE ROOT ADMIN USER  ________ 
+echo "5. Create the root Admin user."
+./create_rootAdmin.sh -- ${statefulSetName} ${containerName} -u ${adminUsername} -p ${adminPassword}
+cleaning
+echo "Step 5 of 6 complete."
+echo ""
 
-# # _______  STEP 6: CREATE STANDARD USER  ________ 
-# echo "6. Create standard user."
-# ./create_standardUser.sh -- ${statefulSetName} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
-# cleaning
-# echo "Step 6 of 6 complete."
-# echo ""
+# _______  STEP 6: CREATE STANDARD USER  ________ 
+echo "6. Create standard user."
+./create_standardUser.sh -- ${statefulSetName} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+cleaning
+echo "Step 6 of 6 complete."
+echo ""
 
-# echo "Everything has launched successfully. Enjoy!"
-# echo ""
-# echo ""
+echo "Everything has launched successfully. Enjoy!"
+echo ""
+echo ""
 
-# # _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
-# echo "Extra. Seed the database."
-# ./seed-db.sh -- ${statefulSetName} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
-# echo "ALL DONE."
+# _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
+echo "Extra. Seed the database."
+./seed-db.sh -- ${statefulSetName} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+echo "ALL DONE."
