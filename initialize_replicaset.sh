@@ -60,9 +60,9 @@ EOF"
 
         echo "Waiting for replica set to initialize."
         timer=1
-        while [ "${timer}" -le 20 ]; do
+        while [ "${timer}" -le 30 ]; do
             sleep 1
-            if [ "${timer}" -lt 20 ]; then
+            if [ "${timer}" -lt 30 ]; then
                 printf '.'
             else
                 echo '.'
@@ -95,7 +95,7 @@ echo "isReplicaSetCreated is ${isReplicaSetCreated}"
 echo ""
             rm ./tempRepSet.txt
             (( counter++ ))
-            sleep 4
+            sleep 5
         done
 
         if [ "${isReplicaSetCreated}" == "false" ]; then
@@ -114,7 +114,7 @@ echo ""
             } 
 EOF" > "${primaryFilename}"
 
-        $(tail -n 2 tempRepSet.txt | grep -v "^bye") > "${primaryFilename}"
+        $(tail -n 2 "${primaryFilename}" | grep -v "^bye") > "${primaryFilename}"
 echo "primary file contains"
 cat ./"${primaryFilename}"
         echo "Confirmed - all replicas initialized and ready." 
