@@ -4,12 +4,12 @@ if [ "${1:0:2}" = "--" ]; then
     shift
 
     # Check that the right number of arguments was passed
-    if [ "${#}" -lt 7 ] || [ "${#}" -gt 8 ]; then
-        echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [:option - port]" 
+    if [ "${#}" -lt 8 ] || [ "${#}" -gt 9 ]; then
+        echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [storageClassName] [:option - port]" 
         exit 1
     fi
 
-    if [ -n "${8}" ] && [ "${8}" -eq "${8}" ] && [ "${8}" -ge 0 ] 2>/dev/null; then
+    if [ -n "${9}" ] && [ "${9}" -eq "${9}" ] && [ "${9}" -ge 0 ] 2>/dev/null; then
         port="${8}"
     else
         port=27017
@@ -23,7 +23,8 @@ if [ "${1:0:2}" = "--" ]; then
         statefulSetObject="${4}" 
         containerName="${5}"
         replSetName="${6}"
-        replicaSecret="${7}" 
+        replicaSecret="${7}"
+        storageClassName="${8}"
 
 cat << EOF > ${manifestFilename}.yml
 apiVersion: v1
@@ -94,10 +95,9 @@ spec:
     volumeClaimTemplates:
         - metadata:
             name: mongodb-persistent-storage-claim
-            annotations:
-                volume.beta.kubernetes.io/storage-class: "standard"
           spec:
             accessModes: ["ReadWriteOnce"]
+            storageClassName: ${storageClassName}
             resources:
               requests:
                 storage: 1Gi
@@ -113,6 +113,6 @@ EOF
     echo "${manifestFilename}.yml manifest generated."
 
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [:option - port]" 
+    echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [storageClassName] [:option - port]" 
     exit 1
 fi

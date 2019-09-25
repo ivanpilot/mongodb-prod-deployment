@@ -23,7 +23,7 @@ statefulService="mongo-service"
 containerName="mongod-container" 
 replSetName="MainRepSet" 
 replicaSecretName="mongodb-replica-secret" 
-storageName="days-storage"
+storageName="fast-storage"
 provisioner="gce-pd"
 diskType="pd-sdd"
 database="db_days" 
@@ -65,7 +65,7 @@ echo ""
 
 # _______  STEP 3: GENERATE REPLICA MANIFEST FILE  ________ 
 echo "2. Generate mongodb replica manifest."
-./generate_replica_manifest.sh -- ${replicas} ${replica_manifest_filename} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName}
+./generate_replica_manifest.sh -- ${replicas} ${replica_manifest_filename} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${replicaSecretName} ${storageName}
 cleaning
 echo "Step 2 of 6 complete."
 echo ""
