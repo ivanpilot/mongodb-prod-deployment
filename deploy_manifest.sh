@@ -79,10 +79,10 @@ echo ""
             for (( i = 0; i < "${replicas}"; i++ )); do
                 read pods[$i] ready[$i] status[$i] age[$i] <<< $(kubectl get pods ${pods[$i]} | grep ${statefulSetName})
 
-                if [ ${status[$i]} == 'Running' ]; then
+                if [ "${statefulSetName}"-"${i}" == "${pods[$i]}" ] && [ "${status[$i]}" == 'Running' ]; then
+echo "Status of pod ${pods[$i]} is ${status[$i]}"
                     (( numPodsRunning++ ))
                 fi
-echo "Status of pod ${pods[$i]} is ${status[$i]}"
             done
 
             sleep 5

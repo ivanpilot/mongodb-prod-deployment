@@ -78,36 +78,38 @@ cleaning
 echo "Step 4 of 7 complete."
 echo ""
 
-# _______  STEP 5: INITIATE THE REPLICA SET  ________ 
-echo "5. Initialize replicas."
-# <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
-./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
 cleaning
-echo "Step 5 of 7 complete."
-echo ""
 
-# _______  DEFINE PRIMARY REPLICA  ________ 
-primary=$(cat ./primary.txt)
+# # _______  STEP 5: INITIATE THE REPLICA SET  ________ 
+# echo "5. Initialize replicas."
+# # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
+# ./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
+# cleaning
+# echo "Step 5 of 7 complete."
+# echo ""
 
-# _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
-echo "6. Create the root Admin user."
-./create_rootAdmin.sh -- ${primary} ${containerName} -u ${adminUsername} -p ${adminPassword}
-cleaning
-echo "Step 6 of 7 complete."
-echo ""
+# # _______  DEFINE PRIMARY REPLICA  ________ 
+# primary=$(cat ./primary.txt)
 
-# _______  STEP 7: CREATE STANDARD USER  ________ 
-echo "7. Create standard user."
-./create_standardUser.sh -- ${primary} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
-cleaning
-echo "Step 7 of 7 complete."
-echo ""
+# # _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
+# echo "6. Create the root Admin user."
+# ./create_rootAdmin.sh -- ${primary} ${containerName} -u ${adminUsername} -p ${adminPassword}
+# cleaning
+# echo "Step 6 of 7 complete."
+# echo ""
 
-echo "Everything has launched successfully. Enjoy!"
-echo ""
-echo ""
+# # _______  STEP 7: CREATE STANDARD USER  ________ 
+# echo "7. Create standard user."
+# ./create_standardUser.sh -- ${primary} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+# cleaning
+# echo "Step 7 of 7 complete."
+# echo ""
 
-# _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
-echo "Extra. Seed the database."
-./seed-db.sh -- ${primary} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
-echo "ALL DONE."
+# echo "Everything has launched successfully. Enjoy!"
+# echo ""
+# echo ""
+
+# # _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
+# echo "Extra. Seed the database."
+# ./seed-db.sh -- ${primary} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+# echo "ALL DONE."
