@@ -65,7 +65,6 @@ if [ "${1:0:2}" = "--" ]; then
         done
 
         echo "Checking if all replicas started up."
-echo ""
         counter=0
         max=15
         while [[ "${numPodsRunning}" -ne "${replicas}" ]]; do
@@ -77,45 +76,18 @@ echo ""
             fi
 
             for (( i = 0; i < "${replicas}"; i++ )); do
-#                 read pods[$i] ready[$i] status[$i] age[$i] <<< $(kubectl get pods ${pods[$i]} | grep ${statefulSetName})
-
-#                 if [ "${statefulSetName}"-"${i}" == "${pods[$i]}" ] && [ "${status[$i]}" == 'Running' ]; then
-# echo "Status of pod ${pods[$i]} is ${status[$i]}"
-#                     (( numPodsRunning++ ))
-#                 fi
-
                 read pods[$i] ready[$i] status[$i] age[$i] <<< $(kubectl get pods | grep "${statefulSetName}"-"${i}")
 
                 if [ "${status[$i]}" == 'Running' ]; then
-echo "Status of pod ${pods[$i]} is ${status[$i]}"
                     (( numPodsRunning++ ))
                 fi
-
-#                 read activePods <<< $(kubectl get pods | grep -c ${statefulSetName})
-
-#                 if [ "${activePods}" -eq "${replicas}" == "${pods[$i]}" ] && [ "${status[$i]}" == 'Running' ]; then
-# echo "Status of pod ${pods[$i]} is ${status[$i]}"
-#                     (( numPodsRunning++ ))
-#                 fi
             done
 
             sleep 5
             (( counter++ ))
         done
-echo ""
-        echo "Confirmed - all replicas started up."
-        
-        echo "Waiting a bit before initializing replicas."
-        timer=1
-        while [ "${timer}" -le 10 ]; do
-            sleep 1
-            if [ "${timer}" -lt 10 ]; then
-                printf '.'
-            else
-                echo '.'
-            fi
-            (( timer++ ))
-        done
+
+        echo "Confirmed - all replicas started up."        
     else
         echo "The number of replicas must be between 1 and 10."
         exit 1
