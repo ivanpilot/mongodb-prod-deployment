@@ -14,13 +14,13 @@ if [ "${1:0:2}" = "--" ]; then
     shift
 
     # Check that the right number of arguments was passed
-    if [ "${#}" -lt 5 ] || [ "${#}" -gt 6 ]; then
-        echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]" 
+    if [ "${#}" -lt 6 ] || [ "${#}" -gt 7 ]; then
+        echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [primary filename] [:option - port]" 
         exit 1
     fi
 
-    if [ -n "${6}" ] && [ "${6}" -eq "${6}" ] && [ "${6}" -ge 0 ] 2>/dev/null; then
-        port="${6}"
+    if [ -n "${7}" ] && [ "${7}" -eq "${7}" ] && [ "${7}" -ge 0 ] 2>/dev/null; then
+        port="${7}"
     else
         port=27017
     fi
@@ -32,6 +32,7 @@ if [ "${1:0:2}" = "--" ]; then
         statefulSetObject="${3}"
         containerName="${4}"
         replSetName="${5}"
+        primaryFilename="${6}.txt"
 
         initializeContent="{_id: '${replSetName}', version: 1, members: "
 
@@ -111,8 +112,11 @@ echo ""
                     }
                 }
             } 
-EOF" > primary.txt
+EOF" > "${primaryFilename}"
 
+        $(tail -n 2 tempRepSet.txt | grep -v "^bye") > "${primaryFilename}"
+echo "primary file contains"
+cat ./"${primaryFilename}"
         echo "Confirmed - all replicas initialized and ready." 
 
     else
@@ -121,6 +125,6 @@ EOF" > primary.txt
     fi
 
 else
-    echo "You must provide arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]"
+    echo "You must provide arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [primary filename] [:option - port]"
     exit 1
 fi

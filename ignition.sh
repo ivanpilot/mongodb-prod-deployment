@@ -16,6 +16,7 @@
 # General variables
 replica_manifest_filename=days-replica-manifest
 storage_manifest_filename=days-storageclass-manifest
+primary_retrieve_filename=primary
 
 replicas=2
 statefulSetName="mongod" 
@@ -81,24 +82,24 @@ echo ""
 # _______  STEP 5: INITIATE THE REPLICA SET  ________ 
 echo "5. Initialize replicas."
 # <program_name> -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port (27017 default)]
-./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} 
+./initialize_replicaset.sh -- ${replicas} ${statefulService} ${statefulSetName} ${containerName} ${replSetName} ${primary_retrieve_filename}
 cleaning
 echo "Step 5 of 7 complete."
 echo ""
 
 # _______  DEFINE PRIMARY REPLICA  ________ 
-primary=$(cat ./primary.txt)
+primaryReplica=$(cat ./${primary_retrieve_filename}.txt)
 
 # _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
 echo "6. Create the root Admin user."
-./create_rootAdmin.sh -- ${primary} ${containerName} -u ${adminUsername} -p ${adminPassword}
+./create_rootAdmin.sh -- ${primaryReplica} ${containerName} -u ${adminUsername} -p ${adminPassword}
 cleaning
 echo "Step 6 of 7 complete."
 echo ""
 
 # _______  STEP 7: CREATE STANDARD USER  ________ 
 echo "7. Create standard user."
-./create_standardUser.sh -- ${primary} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+./create_standardUser.sh -- ${primaryReplica} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
 cleaning
 echo "Step 7 of 7 complete."
 echo ""
@@ -109,7 +110,7 @@ echo ""
 
 # _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
 echo "Extra. Seed the database."
-./seed-db.sh -- ${primary} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+./seed-db.sh -- ${primaryReplica} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
 echo "ALL DONE."
 
 rm primary.txt
