@@ -9,4 +9,4 @@ kubectl exec mongod-0 -c mongod-container -- bash -ec "mongo <<EOF
     } else {
         false
     }
-EOF" > tempRepSet.txt
+EOF" > mytempRepSet.txt

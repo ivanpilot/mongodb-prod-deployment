@@ -70,53 +70,53 @@ EOF"
             (( timer++ ))
         done
 
-#         echo "Checking if all replicas set were initialized." 
-#         isReplicaSetCreated="false"
-#         counter=0
-#         max=15
-#         while [[ "${isReplicaSetCreated}" != "true" && "${counter}" -le "${max}" ]]; do
-#             kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-#                 if (rs.status().hasOwnProperty('myState') &&
-#                 rs.status().myState == ${replicas}) {
-#                     true
-#                 } else {
-#                     false
-#                 }
-# EOF" > tempRepSet.txt
+        echo "Checking if all replicas set were initialized." 
+        isReplicaSetCreated="false"
+        counter=0
+        max=15
+        while [[ "${isReplicaSetCreated}" != "true" && "${counter}" -le "${max}" ]]; do
+            kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
+                if (rs.status().hasOwnProperty('myState') &&
+                rs.status().myState == ${replicas}) {
+                    true
+                } else {
+                    false
+                }
+EOF" > tempRepSet.txt
 
-# echo ""
-# echo "content of tempRep is"
-# cat ./tempRepSet.txt
-# echo ""
+echo ""
+echo "content of tempRep is"
+cat ./tempRepSet.txt
+echo ""
 
-#             isReplicaSetCreated=$(tail -n 2 tempRepSet.txt | grep -v "^bye")
-# echo ""
-# echo "isReplicaSetCreated is ${isReplicaSetCreated}"
-# echo ""
-#             rm ./tempRepSet.txt
-#             (( counter++ ))
-#             sleep 2
-#         done
+            isReplicaSetCreated=$(tail -n 2 tempRepSet.txt | grep -v "^bye")
+echo ""
+echo "isReplicaSetCreated is ${isReplicaSetCreated}"
+echo ""
+            rm ./tempRepSet.txt
+            (( counter++ ))
+            sleep 4
+        done
 
-#         if [ "${isReplicaSetCreated}" == "false" ]; then
-#             echo "Replica set could not be initialized. Abort."
-#             exit 1
-#         fi
+        if [ "${isReplicaSetCreated}" == "false" ]; then
+            echo "Replica set could not be initialized. Abort."
+            exit 1
+        fi
 
-#         # Retrieved primary
-#         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-#             if (rs.status().hasOwnProperty('members')) {
-#                 for (i = 0; i < rs.status().members.length; i++) {
-#                     if(rs.status().members[i].stateStr == 'PRIMARY') {
-#                         print('${statefulSetObject}' + '-' + i)
-#                     }
-#                 }
-#             } 
-# EOF" > "${primaryFilename}"
+        # Retrieved primary
+        kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
+            if (rs.status().hasOwnProperty('members')) {
+                for (i = 0; i < rs.status().members.length; i++) {
+                    if(rs.status().members[i].stateStr == 'PRIMARY') {
+                        print('${statefulSetObject}' + '-' + i)
+                    }
+                }
+            } 
+EOF" > "${primaryFilename}"
 
-#         $(tail -n 2 tempRepSet.txt | grep -v "^bye") > "${primaryFilename}"
-# echo "primary file contains"
-# cat ./"${primaryFilename}"
+        $(tail -n 2 tempRepSet.txt | grep -v "^bye") > "${primaryFilename}"
+echo "primary file contains"
+cat ./"${primaryFilename}"
         echo "Confirmed - all replicas initialized and ready." 
 
     else
