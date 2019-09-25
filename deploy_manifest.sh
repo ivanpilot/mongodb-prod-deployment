@@ -93,6 +93,6 @@ if [ "${1:0:2}" = "--" ]; then
         exit 1
     fi
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [statefulset object] [mongodb manifest filename] [storage manifest filename] [storage name]"
+    echo "You must provide arguments such as -- [replicas] [statefulset object] [mongodb manifest filename] [storage manifest filename] [storage name]"
     exit 1
 fi

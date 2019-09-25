@@ -35,6 +35,6 @@ EOF
     echo "${storageclassFilename}.yml manifest generated."
 
 else
-    echo "You must provide the mandatory arguments such as -- [storage class filename] [storage name] [provisioner - no-provision / gce-pd] [diskType: pd-standard / pd-sdd]" 
+    echo "You must provide arguments such as -- [storage class filename] [storage name] [provisioner - no-provision / gce-pd] [diskType: pd-standard / pd-sdd]" 
     exit 1
 fi

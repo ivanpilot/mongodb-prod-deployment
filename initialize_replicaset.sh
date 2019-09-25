@@ -104,13 +104,13 @@ echo ""
 
         # Retrieved primary
         kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
-                if (rs.status().hasOwnProperty('members') {
-                    for (i = 0; i < rs.status().members.length; i++) {
-                        if(rs.status().members[i].stateStr == 'PRIMARY') {
-                            ${statefulSetObject}-[i]
-                        }
+            if (rs.status().hasOwnProperty('members')) {
+                for (i = 0; i < rs.status().members.length; i++) {
+                    if(rs.status().members[i].stateStr == 'PRIMARY') {
+                        print('${statefulSetObject}' + '-' + i)
                     }
                 }
+            } 
 EOF" > primary.txt
 
         echo "Confirmed - all replicas initialized and ready." 
@@ -121,6 +121,6 @@ EOF" > primary.txt
     fi
 
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]"
+    echo "You must provide arguments such as -- [replicas] [service] [stateful object] [stateful container name] [replSet] [:option - port]"
     exit 1
 fi

@@ -113,6 +113,6 @@ EOF
     echo "${manifestFilename}.yml manifest generated."
 
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [storageClassName] [:option - port]" 
+    echo "You must provide arguments such as -- [replicas] [manifest filename] [service] [stateful object] [stateful container name] [replSet] [replicaSecret] [storageClassName] [:option - port]" 
     exit 1
 fi

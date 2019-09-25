@@ -112,6 +112,6 @@ EOF" > tempAuthUser.txt
     echo "Confirmed - standard user created."
 
 else
-    echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] [database name] -adminu [adminUsername] -adminp [adminPassword] -u [username] -p [password]"
+    echo "You must provide arguments such as -- [primary] [stateful container name] [database name] -adminu [adminUsername] -adminp [adminPassword] -u [username] -p [password]"
     exit 1
 fi

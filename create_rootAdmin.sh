@@ -78,6 +78,6 @@ EOF" > tempAuthAdmin.txt
     echo "Confirmed - root admin user created."
 
 else
-    echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] -u [username] -p [password]"
+    echo "You must provide arguments such as -- [primary] [stateful container name] -u [username] -p [password]"
     exit 1
 fi

@@ -38,6 +38,6 @@ if [ "${1:0:2}" = "--" ]; then
         exit 1
     fi
 else
-    echo "You must provide the mandatory arguments such as -- [replicas] [manifest filename] [storage name] [replica secret name]"
+    echo "You must provide arguments such as -- [replicas] [manifest filename] [storage name] [replica secret name]"
     exit 1
 fi
