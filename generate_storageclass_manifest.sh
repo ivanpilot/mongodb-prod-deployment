@@ -24,9 +24,10 @@ parameters:
     type: ${diskType}
     fsType: xfs
 reclaimPolicy: Retain
+allowVolumeExpansion: true
 mountOptions:
     - debug
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 EOF
 
 
