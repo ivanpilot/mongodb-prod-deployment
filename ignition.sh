@@ -87,30 +87,30 @@ cleaning
 echo "Step 5 of 7 complete."
 echo ""
 
-# _______  DEFINE PRIMARY REPLICA  ________ 
-primaryReplica=$(cat ./${primary_retrieve_filename}.txt)
+# # _______  DEFINE PRIMARY REPLICA  ________ 
+# primaryReplica=$(cat ./${primary_retrieve_filename}.txt)
 
-# _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
-echo "6. Create the root Admin user."
-./create_rootAdmin.sh -- ${primaryReplica} ${containerName} -u ${adminUsername} -p ${adminPassword}
-cleaning
-echo "Step 6 of 7 complete."
-echo ""
+# # _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
+# echo "6. Create the root Admin user."
+# ./create_rootAdmin.sh -- ${primaryReplica} ${containerName} -u ${adminUsername} -p ${adminPassword}
+# cleaning
+# echo "Step 6 of 7 complete."
+# echo ""
 
-# _______  STEP 7: CREATE STANDARD USER  ________ 
-echo "7. Create standard user."
-./create_standardUser.sh -- ${primaryReplica} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
-cleaning
-echo "Step 7 of 7 complete."
-echo ""
+# # _______  STEP 7: CREATE STANDARD USER  ________ 
+# echo "7. Create standard user."
+# ./create_standardUser.sh -- ${primaryReplica} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+# cleaning
+# echo "Step 7 of 7 complete."
+# echo ""
 
-echo "Everything has launched successfully. Enjoy!"
-echo ""
-echo ""
+# echo "Everything has launched successfully. Enjoy!"
+# echo ""
+# echo ""
 
-# _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
-echo "Extra. Seed the database."
-./seed-db.sh -- ${primaryReplica} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
-echo "ALL DONE."
+# # _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
+# echo "Extra. Seed the database."
+# ./seed-db.sh -- ${primaryReplica} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+# echo "ALL DONE."
 
-rm primary.txt
+# rm primary.txt
