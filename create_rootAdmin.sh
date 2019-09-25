@@ -5,11 +5,11 @@ if [ "${1:0:2}" = "--" ]; then
 
     # Check that the right number of arguments was passed
     if [ "${#}" -ne 6 ]; then
-        echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] -u [username] -p [password]"
+        echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] -u [username] -p [password]"
         exit 1
     fi
 
-    statefulSetObject="${1}"
+    primary="${1}"
     containerName="${2}"
     shift 2
 
@@ -44,7 +44,7 @@ if [ "${1:0:2}" = "--" ]; then
     fi
 
     # Create the root admin user
-    kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
+    kubectl exec "${primary}" -c "${containerName}" -- bash -ec "mongo <<EOF
         db.getSiblingDB('admin').createUser({
             user: '${username}',
             pwd: '${password}',
@@ -57,7 +57,7 @@ EOF"
     counter=0
     max=15
     while [[ "${isRootAdminUserCreated}" == "false" && "${counter}" -le "${max}" ]]; do
-        kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
+        kubectl exec "${primary}" -c "${containerName}" -- bash -ec "mongo <<EOF
             if (db.getSiblingDB('admin').auth('${username}', '${password}')) {
                 true
             } else {
@@ -78,6 +78,6 @@ EOF" > tempAuthAdmin.txt
     echo "Confirmed - root admin user created."
 
 else
-    echo "You must provide the mandatory arguments such as -- [statefulset object] [stateful container name] -u [username] -p [password]"
+    echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] -u [username] -p [password]"
     exit 1
 fi

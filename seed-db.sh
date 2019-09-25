@@ -5,11 +5,11 @@ if [ "${1:0:2}" = "--" ]; then
 
     # Check that the right number of arguments was passed
     if [ "${#}" -ne 8 ]; then
-        echo "You must provide the mandatory arguments such as -- [stateful object] [stateful container name] [database name] [collection name] -u [username] -p [password]" 
+        echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] [database name] [collection name] -u [username] -p [password]" 
         exit 1
     fi
 
-    statefulSetObject="${1}" 
+    primary="${1}" 
     containerName="${2}"
     database="${3}"
     collectionName="${4}"
@@ -48,7 +48,7 @@ if [ "${1:0:2}" = "--" ]; then
 
     echo "Currently seeding database..."
 
-    kubectl exec "${statefulSetObject}"-0 -c "${containerName}" -- bash -ec "mongo <<EOF
+    kubectl exec "${primary}" -c "${containerName}" -- bash -ec "mongo <<EOF
         db.getSiblingDB('${database}').auth('${username}', '${password}');
         use ${database};
         db.createCollection('${collectionName}');
@@ -88,6 +88,6 @@ EOF"
 
     echo "Database was successfully seed."
 else
-    echo "You must provide the mandatory arguments such as -- [stateful object] [stateful container name] [database name] [collection name] -u [username] -p [password]" 
+    echo "You must provide the mandatory arguments such as -- [primary] [stateful container name] [database name] [collection name] -u [username] -p [password]" 
     exit 1
 fi

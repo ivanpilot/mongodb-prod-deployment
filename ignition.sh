@@ -85,16 +85,20 @@ echo "4. Initialize replicas."
 cleaning
 echo "Step 4 of 6 complete."
 echo ""
+
+# _______  DEFINE PRIMARY REPLICA  ________ 
+primary=$(cat ./primary.txt)
+
 # _______  STEP 5: CREATE ROOT ADMIN USER  ________ 
 echo "5. Create the root Admin user."
-./create_rootAdmin.sh -- ${statefulSetName} ${containerName} -u ${adminUsername} -p ${adminPassword}
+./create_rootAdmin.sh -- ${primary} ${containerName} -u ${adminUsername} -p ${adminPassword}
 cleaning
 echo "Step 5 of 6 complete."
 echo ""
 
 # _______  STEP 6: CREATE STANDARD USER  ________ 
 echo "6. Create standard user."
-./create_standardUser.sh -- ${statefulSetName} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
+./create_standardUser.sh -- ${primary} ${containerName} ${database} -adminu ${adminUsername} -adminp ${adminPassword} -u ${username} -p ${password}
 cleaning
 echo "Step 6 of 6 complete."
 echo ""
@@ -105,5 +109,5 @@ echo ""
 
 # _______  STEP X: EXTRA STEP TO SEED DATABASE  ________ 
 echo "Extra. Seed the database."
-./seed-db.sh -- ${statefulSetName} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
+./seed-db.sh -- ${primary} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
 echo "ALL DONE."
