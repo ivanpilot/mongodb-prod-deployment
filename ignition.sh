@@ -89,6 +89,7 @@ echo ""
 
 # _______  DEFINE PRIMARY REPLICA  ________ 
 primaryReplica=$(cat ./"${primary_retrieve_filename}".txt)
+echo "${primaryReplica}"
 
 # _______  STEP 6: CREATE ROOT ADMIN USER  ________ 
 echo "6. Create the root Admin user."
@@ -113,4 +114,4 @@ echo "Extra. Seed the database."
 ./seed-db.sh -- ${primaryReplica} ${containerName} ${database} ${collectionName} -u ${username} -p ${password}
 echo "ALL DONE."
 
-# rm primary.txt
+rm "${primary_retrieve_filename}".txt

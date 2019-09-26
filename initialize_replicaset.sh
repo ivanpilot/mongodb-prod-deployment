@@ -84,15 +84,7 @@ EOF"
                 }
 EOF" > tempRepSet.txt
 
-echo ""
-echo "content of tempRep is"
-cat ./tempRepSet.txt
-echo ""
-
             isReplicaSetCreated=$(tail -n 2 tempRepSet.txt | grep -v "^bye")
-echo ""
-echo "isReplicaSetCreated is ${isReplicaSetCreated}"
-echo ""
             rm ./tempRepSet.txt
             (( counter++ ))
             sleep 5
@@ -115,10 +107,8 @@ echo ""
 EOF" > "${primaryFilename}"
 
         echo $(tail -n 2 "${primaryFilename}" | grep -v "^bye") > "${primaryFilename}"
-echo "primary file contains"
-cat ./"${primaryFilename}"
-        echo "Confirmed - all replicas initialized and ready." 
 
+        echo "Confirmed - all replicas initialized and ready." 
     else
         echo "The number of replicas must be between 1 and 10" 
         exit 1
