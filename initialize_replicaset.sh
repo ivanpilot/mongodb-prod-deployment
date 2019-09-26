@@ -114,7 +114,7 @@ echo ""
             } 
 EOF" > "${primaryFilename}"
 
-        $(tail -n 2 "${primaryFilename}" | grep -v "^bye") > "${primaryFilename}"
+        echo $(tail -n 2 "${primaryFilename}" | grep -v "^bye") > "${primaryFilename}"
 echo "primary file contains"
 cat ./"${primaryFilename}"
         echo "Confirmed - all replicas initialized and ready." 
