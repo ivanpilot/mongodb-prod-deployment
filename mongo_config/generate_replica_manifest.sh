@@ -31,15 +31,13 @@ apiVersion: v1
 kind: Service
 metadata:
     name: ${statefulServiceName}
-    labels:
-        name: mongo-statefulset
 spec:
     ports:
       - port: ${port}
-        targetPort: ${port}
     clusterIP: None
     selector:
-        role: mongo
+        component: mongo
+        env: dev
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -50,11 +48,15 @@ spec:
     replicas: ${replicas}
     selector:
         matchLabels:
-            role: mongo
+            component: mongo
+            env: dev
     template:
         metadata:
             labels:
-                role: mongo
+                component: mongo
+                env: dev
+                enabled: "true"
+                release: "n.a"
         spec:
             terminationGracePeriodSeconds: 10
             volumes:
@@ -90,11 +92,11 @@ spec:
                   - name: secrets-volume
                     readOnly: true
                     mountPath: /etc/secrets-volume
-                  - name: mongodb-persistent-storage-claim
+                  - name: mongo-pvc
                     mountPath: /data/db
     volumeClaimTemplates:
         - metadata:
-            name: mongodb-persistent-storage-claim
+            name: mongo-pvc
           spec:
             accessModes: ["ReadWriteOnce"]
             storageClassName: ${storageClassName}
