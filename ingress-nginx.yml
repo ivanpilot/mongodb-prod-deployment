@@ -14,41 +14,29 @@ metadata:
         nginx.ingress.kubernetes.io/session-cookie-change-on-failure: "true"
 
         nginx.ingress.kubernetes.io/use-regex: "true"
-        nginx.ingress.kubernetes.io/session-cookie-path: "/api/socket.io"
-
-        # nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-
+        nginx.ingress.kubernetes.io/session-cookie-path: "/socket.io"
         nginx.ingress.kubernetes.io/rewrite-target: /$1 break;
-        # nginx.ingress.kubernetes.io/configuration-snippet: rewrite /api/(.*) /$1 break
 spec:
     rules:
         - host: nanoscal.com
           http:
               paths:
-                  - path: /(.*)
+                  - path: /?(.*)
                     backend:
                         serviceName: client-svc
                         servicePort: 3000
-                  - path: /api/(.*)
+                  - path: /api/?(.*)
                     backend:
                         serviceName: server-svc
                         servicePort: 5000
-                  #   - path: /socket.io/
-                  #     backend:
-                  #         serviceName: server-svc
-                  #         servicePort: 5000
         - host: www.nanoscal.com
           http:
               paths:
-                  - path: /(.*)
+                  - path: /?(.*)
                     backend:
                         serviceName: client-svc
                         servicePort: 3000
-                  - path: /api/(.*)
+                  - path: /api/?(.*)
                     backend:
                         serviceName: server-svc
                         servicePort: 5000
-                  #   - path: /socket.io/
-                  #     backend:
-                  #         serviceName: server-svc
-                  #         servicePort: 5000
