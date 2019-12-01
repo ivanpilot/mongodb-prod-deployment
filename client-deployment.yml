@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: client-deploy
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: client-web
+            env: dev
+    template:
+        metadata:
+            labels:
+                component: client-web
+                env: dev
+                enabled: "true"
+                release: "n.a"
+        spec:
+            containers:
+                - name: client
+                  image: ivanpilot/todo_client
+                  imagePullPolicy: Always
+                  ports:
+                    - containerPort: 3000
+                  lifecycle:
+                    preStop:
+                      exec:
+                        command: [
+                #             "sh", "-c", "sleep 5 && /usr/sbin/nginx -s quit"
+                            "/bin/sh","-c","nginx -s quit; while killall -0 nginx; do sleep 1; done"
+                        ]
+                  resources:
+                    requests:
+                      cpu: "0.1"
+                      memory: "200Mi"
+                    limits:
+                      cpu: "0.2"
+                      memory: "200Mi"
+                  livenessProbe:
+                    exec:
+                      command:
+                        - cat
+                        - /tmp/healthy
+                    initialDelaySeconds: 10
+                    periodSeconds: 15
+                    failureThreshold: 5
+                  readinessProbe:
+                    exec:
+                      command:
+                        - cat
+                        - /tmp/healthy
+                    initialDelaySeconds: 5
+                    periodSeconds: 15
+                    failureThreshold: 5
+                  volumeMounts:
+                    - mountPath: /var/cache/nginx
+                      name: nginx-cache
+            #         - mountPath: /var/log/nginx
+            #           name: nginx-log
+                    - mountPath: /tmp
+                      name: nginx-tmp
+                    - mountPath: /var/run
+                      name: nginx-run
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      readOnlyRootFilesystem: true
+                      runAsNonRoot: true
+                      # www-data > 33
+                      runAsUser: 33
+            volumes:
+                - name: nginx-cache
+                  emptyDir: {}
+            #     - name: nginx-log
+            #       emptyDir: {}
+                - name: nginx-tmp
+                  emptyDir: {}
+                - name: nginx-run
+                  emptyDir: {}

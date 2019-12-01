@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: client-svc
+    labels:
+        component: service
+        env: dev
+        enabled: "true"
+        release: "n.a"
+spec:
+    type: ClusterIP
+    selector:
+        component: client-web
+        env: dev
+    ports:
+        - port: 3000
+          targetPort: 3000

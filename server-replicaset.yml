@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+    name: server-rs
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            component: server
+            env: dev
+    template:
+        metadata:
+            labels:
+                component: server
+                env: dev
+                rel: none
+                enabled: "true"
+        spec:
+            # make sure each pod is deployed on a different node for sticky session to work correctly
+            affinity:
+                podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                        - weight: 100
+                          podAffinityTerm:
+                              topologyKey: kubernetes.io/hostname
+                              labelSelector:
+                                  matchLabels:
+                                      component: server
+                                      env: dev
+            containers:
+                - image: ivanpilot/todo_api:no-db-socket
+                  name: todo-api
+                  imagePullPolicy: Always
+                  ports:
+                      - name: http
+                        containerPort: 5000
+                  # best to configure a readiness probe pinging database server
+                  readinessProbe:
+                      initialDelaySeconds: 10
+                      periodSeconds: 15
+                      failureThreshold: 3
+                      httpGet:
+                          path: "/health/readiness"
+                          port: http
+                  livenessProbe:
+                      initialDelaySeconds: 15
+                      periodSeconds: 15
+                      failureThreshold: 3
+                      httpGet:
+                          path: "/health/liveness"
+                          port: http
+                  env:
+                      - name: NODE_ENV
+                        value: production
+                      - name: REDIS_HOST
+                        value: redis-svc
+                      - name: REDIS_PORT
+                        value: "6379"

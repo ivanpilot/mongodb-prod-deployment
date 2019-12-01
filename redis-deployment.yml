@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: redis-deploy
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: redis
+            env: dev
+    template:
+        metadata:
+            labels:
+                component: redis
+                env: dev
+                enabled: "true"
+                release: "n.a"
+        spec:
+            containers:
+                - image: redis
+                  name: redis-master
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 6379
+                  readinessProbe:
+                      initialDelaySeconds: 10
+                      periodSeconds: 15
+                      timeoutSeconds: 5
+                      exec:
+                          command:
+                              - sh
+                              - -c
+                              - "redis-cli -h $(hostname) ping"
+                  livenessProbe:
+                      initialDelaySeconds: 15
+                      periodSeconds: 15
+                      timeoutSeconds: 5
+                      exec:
+                          command:
+                              - sh
+                              - -c
+                              - "redis-cli -h $(hostname) ping"
+                  resources:
+                      requests:
+                          cpu: "0.1"
+                          memory: "100Mi"
+                      limits:
+                          cpu: "0.2"
+                          memory: "100Mi"

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: server-deploy
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            component: server
+            env: dev
+    template:
+        metadata:
+            labels:
+                component: server
+                env: dev
+                enabled: "true"
+                release: "n.a"
+        spec:
+            affinity:
+                podAntiAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                        - weight: 100
+                          podAffinityTerm:
+                              topologyKey: kubernetes.io/hostname
+                              labelSelector:
+                                  matchLabels:
+                                      component: server
+                                      env: dev
+            containers:
+                - image: ivanpilot/todo_api:add-client-socket
+                  name: todo-api
+                  imagePullPolicy: Always
+                  ports:
+                      - name: http
+                        containerPort: 5000
+                  # best to configure a readiness probe pinging database server so that the api server is ready only after making sure that the db server is ready
+                  readinessProbe:
+                      initialDelaySeconds: 10
+                      periodSeconds: 15
+                      failureThreshold: 3
+                      httpGet:
+                          path: "/health/readiness"
+                          port: http
+                  livenessProbe:
+                      initialDelaySeconds: 15
+                      periodSeconds: 15
+                      failureThreshold: 3
+                      httpGet:
+                          path: "/health/liveness"
+                          port: http
+                  resources:
+                      requests:
+                          cpu: "0.1"
+                          memory: "200Mi"
+                      limits:
+                          cpu: "0.2"
+                          memory: "200Mi"
+                  env:
+                      - name: NODE_ENV
+                        value: production
+                      - name: PORT
+                        value: "5000"
+                      - name: REDIS_HOST
+                        value: redis-svc
+                      - name: REDIS_PORT
+                        value: "6379"
+                      - name: DB_HOST
+                        value: mongo-svc
+                      - name: DB_PORT
+                        value: "27017"
+                      - name: DB_NAME
+                        value: "todo_db"
+                      - name: DB_USERNAME
+                        value: "ivan"
+                      - name: DB_PASSWORD
+                        value: "ivan"
